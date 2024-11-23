@@ -9,7 +9,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Sign-up route
 router.post('/signup', async (req, res) => {
-    const { name, email, password, profilePicture } = req.body;
+    console.log("Register called")
+    console.log(req.body)
+    const { email, password } = req.body;
     try {
         // Check if the user already exists
         let existingUser = await User.findOne({ email });
@@ -19,10 +21,8 @@ router.post('/signup', async (req, res) => {
 
         // Create a new user
         const newUser = new User({
-            name,
             email,
             password,
-            profilePicture
         });
 
         // Save the new user (password hashing is done in the User model's pre-save hook)

@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoute');
+const eventRoutes = require('./routes/eventRoutes');
 
 dotenv.config();
 connectDB();
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use('/api/users', userRoutes);
 app.use('/auth', authRoutes);
+app.use('/event', eventRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

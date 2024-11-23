@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    fullName: { type: String},
+    username: { type: String, unique: true},
+    bio: { type: String},
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profilePicture: { type: String, default: '' }, // URL to the profile picture

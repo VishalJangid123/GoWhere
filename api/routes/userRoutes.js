@@ -2,7 +2,33 @@ const express = require('express');
 const router = express.Router();
 const User = require('../Models/User');
 const Event = require('../Models/Event');
-const authMiddleware = require('./middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware');
+
+// Route to get the logged-in user's details
+router.get('/me', authMiddleware, async (req, res) => {
+    console.log(req.user.id)
+    try {
+        const user = await User.findById(req.user.id).populate('attendedEvents');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            profilePicture: user.profilePicture,
+            badge: user.badge,
+            attendedEvents: user.attendedEvents,
+            followers: user.followers,
+            following: user.following,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+});
 
 // Route to get user profile
 router.get('/:userId', authMiddleware, async (req, res) => {
