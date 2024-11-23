@@ -1,17 +1,45 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform, View, StyleSheet, Text } from 'react-native';
+import { Redirect, router, Stack, Tabs, useNavigation } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Platform, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Feather } from '@expo/vector-icons';
+import { useAuth } from '@/context/AuthContext';
+import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const {authState} = useAuth();
+  const navi = useNavigation();
+  
 
+
+  useEffect(()=> {
+    console.log("Auth State changed", authState)
+    if(authState?.loading === true)
+      return;
+    
+    if(authState?.authenticated === false || authState?.authenticated === null)
+      {
+        console.log("firstredirect")
+        
+        router.navigate('/signin')
+      }
+
+      if(authState?.authenticated === true)
+      {
+
+      }
+  }, [authState])
+  
   return (
+   
+    
+    <UserPreferencesProvider>
+
     <Tabs
     screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -36,6 +64,7 @@ export default function TabLayout() {
       }}>
       <Tabs.Screen
         name="index"
+        
         options={{
           tabBarIcon: ({ color }) => 
           <View style={styles
@@ -56,8 +85,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        
         name="add"
         options={{
+          href: null,
           title: 'add',
           tabBarIcon: ({ color }) => 
           <View style={{
@@ -91,6 +122,9 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </UserPreferencesProvider>
+
+
   );
 }
 
