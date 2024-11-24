@@ -1,50 +1,152 @@
-# Welcome to your Expo app 👋
+# GoWhere Project Tasks
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## **Core Functionality**
 
-## Get started
+### **User Authentication**
 
-1. Install dependencies
+- [ ]  **Sign-Up Feature**
+    - **UI**: Create a registration form with fields for username, email, and password.
+    - **API**: Implement `/signup` endpoint in the backend to store user credentials securely.
+- [ ]  **Login Feature**
+    - **UI**: Design a login page with email and password fields.
+    - **API**: Implement `/login` endpoint to verify credentials and return a JWT token.
+- [ ]  **Password Recovery**
+    - **UI**: Add "Forgot Password?" link to the login page leading to a recovery form.
+    - **API**: Create `/recover-password` endpoint to send a password reset email.
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+### **Event Feed**
 
-   ```bash
-    npx expo start
-   ```
+- [ ]  **Event List with Sorting and Filtering**
+    - **UI**: Design an event feed showing event cards (title, date, location, and creator).
+    - **API**: Use `/events` endpoint to fetch and filter events dynamically.
+- [ ]  **Event Search**
+    - **UI**: Add a search bar at the top of the feed for keyword searches.
+    - **API**: Extend `/events` endpoint to include search functionality.
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### **Event Management**
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- [ ]  **Create Event**
+    - **UI**: Build a form to input event details like title, date, location, and description.
+    - **API**: Implement `POST /events` endpoint to save new events to the database.
+- [ ]  **Edit Event**
+    - **UI**: Add an edit button on the event detail page to pre-fill the creation form.
+    - **API**: Implement `PUT /events/:id` endpoint to update event details.
+- [ ]  **Delete Event**
+    - **UI**: Add a delete button on the event detail page with a confirmation modal.
+    - **API**: Implement `DELETE /events/:id` endpoint to remove events.
+- [ ]  **Mark as Interested/Will Go**
+    - **UI**: Add buttons on the event detail page for "Interested" and "Will Go."
+    - **API**: Create endpoints `/events/:id/interested` and `/events/:id/willgo`.
 
-## Get a fresh project
+---
 
-When you're ready, run:
+### **Profiles**
 
-```bash
-npm run reset-project
-```
+- [ ]  **User Profile**
+    - **UI**: Design a profile page showing user information and created/joined events.
+    - **API**: Fetch data from `/users/:id` endpoint.
+- [ ]  **Edit Profile**
+    - **UI**: Build an editable form for updating user details like name and bio.
+    - **API**: Implement `PUT /users/:id` endpoint to update user data.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## **Chat Feature**
 
-To learn more about developing your project with Expo, look at the following resources:
+### **Private Chat**
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- [ ]  **Chat Request**
+    - **UI**: Add a "Request to Chat" button on user profiles.
+    - **API**: Create `POST /chat/request` endpoint to initiate a chat request.
+- [ ]  **Messaging**
+    - **UI**: Build a messaging screen with a real-time chat interface.
+    - **API**: Implement `/chat/:chatId` endpoint and use Socket.IO for real-time messaging.
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+### **Group Chat**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [ ]  **Event Attendee Chat**
+    - **UI**: Add a group chat button on the event detail page.
+    - **API**: Create `POST /chat/group` for event chats and `/chat/group/:eventId` for messages.
+
+---
+
+## **Follow System**
+
+### **Follow/Unfollow**
+
+- [ ]  **Follow Button**
+    - **UI**: Add "Follow" and "Unfollow" buttons on user profiles.
+    - **API**: Implement `POST /follow/:userId` and `DELETE /follow/:userId` endpoints.
+- [ ]  **Followers List**
+    - **UI**: Create a tab to display a list of followers and following.
+    - **API**: Fetch data from `/follow/:userId`.
+
+---
+
+## **Filters and Search**
+
+- [ ]  **Filter Events**
+    - **UI**: Add dropdown filters for category, date, and location on the event feed.
+    - **API**: Extend `/events` endpoint to handle multiple filter parameters.
+- [ ]  **Keyword Search**
+    - **UI**: Place a search bar in the navigation header.
+    - **API**: Include a query parameter in the `/events` endpoint for keyword searches.
+
+---
+
+## **Notifications**
+
+- [ ]  **Push Notifications**
+    - **UI**: Add a notification icon in the app header.
+    - **API**: Use Firebase Cloud Messaging (FCM) to send real-time notifications for new chats and event updates.
+
+---
+
+## **Backend Development**
+
+### **Database**
+
+- [ ]  Design MongoDB schema for:
+    - Users (username, email, password, bio, followers, following)
+    - Events (title, date, location, attendees)
+    - Chats (participants, messages)
+- [ ]  Use bcrypt for password encryption.
+
+### **API Endpoints**
+
+- [ ]  Authentication:
+    - `/signup`
+    - `/login`
+    - `/recover-password`
+- [ ]  Event Management:
+    - `GET /events`
+    - `POST /events`
+    - `PUT /events/:id`
+    - `DELETE /events/:id`
+- [ ]  Chat:
+    - `POST /chat/request`
+    - `POST /chat/group`
+    - `GET /chat/:chatId`
+- [ ]  Follow System:
+    - `POST /follow/:userId`
+    - `DELETE /follow/:userId`
+    - `GET /follow/:userId`
+
+---
+
+
+---
+
+## **Deployment**
+
+- [ ]  Backend:
+    - Deploy Node.js API to AWS or Heroku.
+    - Use MongoDB Atlas for database hosting.
+- [ ]  Frontend:
+    - Deploy Expo app for both iOS and Android.
