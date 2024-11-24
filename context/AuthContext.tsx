@@ -5,7 +5,7 @@ import { router } from "expo-router";
 
 export interface User {
     id: string;
-    name: string;
+    fullName: string;
     email: string;
     followers: Number,
     following: Number,
@@ -15,7 +15,7 @@ export interface User {
 
 interface AuthProps {
     authState?: { token : string | null; authenticated: boolean | null, loading: boolean }
-    onRegister?: (email : string, password: string) => Promise<any>;
+    onRegister?: (fullName: string, email : string, password: string) => Promise<any>;
     onLogin?: (email: string, password: string) => Promise<any>;
     onLogOut?: () => Promise<any>
     user: User ;
@@ -43,7 +43,7 @@ export const AuthProvider = ({children} : any) => {
 
     const [user, setUser] = useState<{
         id : String, 
-        name: string,
+        fullName: string,
         email: string;
         followers: Number,
         following: Number,
@@ -71,6 +71,15 @@ export const AuthProvider = ({children} : any) => {
                     getUser(token)
                 }
             }
+            else
+            {
+                setAuthState({
+                    token: null, 
+                    authenticated: false,
+                    loading: false
+                })
+                router.navigate('/signin')
+            }
         }
 
         loadToken();
@@ -89,12 +98,14 @@ export const AuthProvider = ({children} : any) => {
             
             setUser({
                 id : result.data.id, 
-                name: result.data.name,
+                fullName: result.data.fullName,
                 email: result.data.email,
                 followers: 1,
                 following: 1,
                 badge: "string",
             })
+
+            router.navigate('/(app)/(tabs)')
         }
         catch(e){
             console.log((e as any).response.status)
@@ -108,10 +119,12 @@ export const AuthProvider = ({children} : any) => {
         }
     }
 
-    const register = async (email: string, password: string) => {
+    const register = async (fullName: string, email: string, password: string) => {
         console.log("reg")
         try{
-            return await axios.post(`${API_URL}/signup`, {email, password});
+            const result  = await axios.post(`${API_URL}/signup`, {fullName, email, password});
+            login(email, password)
+        
         }
         catch(e){
             return { error : true, msg : e};
@@ -157,6 +170,7 @@ export const AuthProvider = ({children} : any) => {
             authenticated: null,
             loading :false
         })
+        router.navigate('/signin')
     }
     
     const value = {

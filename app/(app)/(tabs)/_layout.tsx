@@ -1,4 +1,4 @@
-import { Redirect, router, Stack, Tabs, useNavigation } from 'expo-router';
+import { Redirect, router, Slot, Stack, Tabs, useNavigation, useRootNavigationState } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Platform, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
@@ -9,14 +9,14 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { Feather } from '@expo/vector-icons';
 import { useAuth } from '@/context/AuthContext';
 import { UserPreferencesProvider } from '@/context/UserPreferencesContext';
+import { useUser } from '@/context/UserContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const {authState} = useAuth();
   const navi = useNavigation();
-  
-
-
+  const rootNavigationState = useRootNavigationState();
+  const { refreshUserData } = useUser()
   useEffect(()=> {
     console.log("Auth State changed", authState)
     if(authState?.loading === true)
@@ -31,14 +31,22 @@ export default function TabLayout() {
 
       if(authState?.authenticated === true)
       {
-
+        console.log("refreshUserData")
+        refreshUserData()
       }
   }, [authState])
   
+
+  if(authState?.authenticated === false)
+  {
+    console.log("Returning")
+    return <Redirect href="/signin"/>
+  }
+
   return (
-   
-    
-    <UserPreferencesProvider>
+   <>
+    {
+    authState?.loading === false && authState?.authenticated && <UserPreferencesProvider>
 
     <Tabs
     screenOptions={{
@@ -123,6 +131,10 @@ export default function TabLayout() {
       />
     </Tabs>
     </UserPreferencesProvider>
+
+    
+   }
+    </>
 
 
   );

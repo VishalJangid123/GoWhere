@@ -30,6 +30,8 @@ export default function EventCard({ event }) {
           </Text>
         </View>
 
+        {
+          event.attendees.length > 0 && 
         <View className="flex-row items-center gap-3">
           <View className="flex-row -space-x-4 overflow-hidden">
             <Image
@@ -62,10 +64,11 @@ export default function EventCard({ event }) {
             <Text className="text-gray-600">1624</Text>
           </View>
         </View>
+}
 
         <View className="flex-col ">
           <Text>1/2 Will go * 13 Interested</Text>
-          <Text>This is a general event description</Text>
+          <Text>{event.notesForAttendees}</Text>
         </View>
       </View>
     </View>

@@ -385,15 +385,13 @@ in the area! If you're coming, please drink with us- the soju is"
           />
         </View>
 
-        <TouchableOpacity
-          disabled={postDisabled}
-          onPress={() => addEvent()}
-          className={`${
-            postDisabled ? "bg-primary opacity-50" : "bg-primary"
-          } p-4  rounded-full justify-center items-center`}
-        >
-          <Text className="font-inter-bold text-white text-lg">Post</Text>
+        <View className="fixed bottom-20 flex w-full ">
+        <TouchableOpacity 
+        onPress={()=> addEvent()}
+        className="justify-center self-center w-[95%] bg-primary p-4 rounded-full items-center">
+            <Text className="text-white font-inter-bold text-xl">Create</Text>
         </TouchableOpacity>
+      </View>
       </View>
       </ScrollView>
 

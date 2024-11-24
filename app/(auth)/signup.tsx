@@ -1,23 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import { View, Text, SafeAreaView, TextInput, TouchableOpacity } from 'react-native'
 import axios from 'axios';
 import { useAuth } from '@/context/AuthContext';
+import CustomButton from '@/components/CustomButton';
 
 export default function SignUp() {
     const router = useRouter()
     const navigation = useNavigation();
     const {onRegister, onLogin } = useAuth()
 
+    const [ registerForm, setRegisterForm ] = useState({
+      fullName : "",
+      email : "",
+      password: ""
+    }) 
+
+
+    const handleChange = (field: string, value : string) => {
+      setRegisterForm({
+        ...registerForm,
+        [field]: value,
+      });
+    };
+
     navigation.setOptions({
-      headerShown: true
+      headerShown: false
     })
     
     const register = async () => {
-        console.log("register")
-        const email = "test@mail.com";
-        const pass = "test123";
-        const result = await onRegister!(email, pass, )
+        const result = await onRegister!(registerForm.fullName ,registerForm.email, registerForm.password, )
         if(result && result.error)
         {
             alert(result.msg)
@@ -26,23 +38,42 @@ export default function SignUp() {
     }
     
     return (
-    <SafeAreaView>
-      <Text onPress={() => router.push('/(auth)/signup')}>Sign up</Text>
+      <SafeAreaView>
+      <View className="p-5 gap-5 justify-center content-center">
+      <Text className="text-2xl font-inter-bold">Sign Up</Text>
 
+      <View className="gap-2">
+      <Text className="font-inter-semiBold">Full Name</Text>
+      <TextInput 
+      onChangeText={(text) => handleChange('fullName', text)}
+      placeholder="eg. Vishal" className="p-5 border border-gray-400 rounded-2xl elevation" />
+      </View>
       
-      <TextInput placeholder='Email' 
-      className='p-5 border rounded'
-      />
-      <TextInput placeholder='Password'  className='p-5 border rounded'/>
+      <View className="gap-2">
+      <Text className="font-inter-semiBold">Email</Text>
+      <TextInput 
+      autoCapitalize='none'
+      keyboardType='email-address'
+      onChangeText={(text) => handleChange('email', text)}
+      placeholder="eg. myemail@email.com" className="p-5 border border-gray-400 rounded-2xl elevation" />
+      </View>
 
-      <TouchableOpacity onPress={()=> register()}>
-        <Text>Register</Text>
-      </TouchableOpacity>
+      <View className="gap-2">
+      <Text className="font-inter-semiBold">Password</Text>
+      <TextInput 
+      autoCapitalize='none'
+      keyboardType='email-address'
+      onChangeText={(text) => handleChange('password', text)}
+      secureTextEntry
+      placeholder="********" className="p-5 border border-gray-400 rounded-2xl elevation" />
+      </View>
+      
+      
 
-      <TouchableOpacity onPress={()=> router.push('/(auth)')}>
-        <Text>Log In</Text>
-      </TouchableOpacity>
 
-    </SafeAreaView> 
+      <CustomButton title="Create Account" onPress={()=> register()} />
+      <CustomButton type="outline" title="Already have account" onPress={()=>  router.navigate('/signin')} />
+      </View>
+    </SafeAreaView>
   )
 }

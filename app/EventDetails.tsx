@@ -14,7 +14,7 @@ import { checkDate } from "@/Utils";
 import moment from "moment";
 import axios from "axios";
 import { Location } from "@/context/EventContext";
-import { User } from "@/context/AuthContext";
+import { User } from "@/context/UserContext";
 
 interface Event {
   name: String;
@@ -97,8 +97,13 @@ export default function EventDetails() {
           </View>
 
           <View className="flex-row gap-3 items-center">
-            <Feather name="circle" size={25} />
-            <Text className="font-inter-semiBold">{event.createdBy.email}</Text>
+          {/* <Image
+              className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
+              source={{
+                uri: event.createdBy.profilePicture ? event.createdBy.profilePicture,
+              }}
+            /> */}
+            <Text className="font-inter-semiBold">{event.createdBy.fullName}</Text>
           </View>
 
           <View>
@@ -114,6 +119,15 @@ export default function EventDetails() {
         <View>
             <Text>47/50 Will go * 1656</Text>
         </View>
+
+        <View>
+          <TouchableOpacity>
+            <Feather name='plus-circle' size={50} color={"#49D6D8"}/>
+            <Text className="font-inter-semiBold">Add Friends</Text>
+          </TouchableOpacity>
+        </View>
+
+
       </ScrollView>
 
       <View className="absolute bottom-7 flex w-full">

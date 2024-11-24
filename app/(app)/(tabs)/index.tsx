@@ -1,34 +1,34 @@
-import {
-  Poppins_400Regular,
-  Poppins_600SemiBold,
-} from "@expo-google-fonts/poppins";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link, Stack, useNavigation, useRouter } from "expo-router";
+import { Feather, MaterialCommunityIcons, SimpleLineIcons } from "@expo/vector-icons";
+import { Stack, useNavigation, useRouter } from "expo-router";
 import {
   Image,
-  StyleSheet,
   View,
   Text,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
   ScrollView,
   FlatList,
-  Dimensions,
+  RefreshControl,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEvents } from "../../eventSlice";
+import { fetchEvents } from "../../../eventSlice";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import EventCard from "@/components/EventCard";
-import ChooseEventType from "../choose-event-type";
-import CustomModal from "../../components/CustomModal";
+import ChooseEventType from "../../choose-event-type";
+import CustomModal from "../../../components/CustomModal";
 import { Categories } from "@/constants/Categories";
 import { useEvent } from "@/context/EventContext";
 import { Picker } from "@react-native-picker/picker";
 import Slider from "@react-native-community/slider";
 import CalendarPicker from "react-native-calendar-picker";
-import { UserPreferencesProvider, useUserPreferences } from "@/context/UserPreferencesContext";
+import {
+  UserPreferencesProvider,
+  useUserPreferences,
+} from "@/context/UserPreferencesContext";
+import { useUser } from "@/context/UserContext";
+
+import { Avatar } from 'react-native-elements';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -39,7 +39,8 @@ export default function HomeScreen() {
 
   const { eventData, updateEventData } = useEvent();
 
-  const { location, theme, loading, updateLocation, updateTheme }  = useUserPreferences();
+  const { location, theme, loading, updateLocation, updateTheme } =
+    useUserPreferences();
 
   const [placePickerModalVisible, setPlacePickerModelVisible] = useState(false);
   const [distanceSliderModalVisible, setDistanceSliderModelVisible] =
@@ -56,6 +57,8 @@ export default function HomeScreen() {
   const { events, status, error, lastUpdated } = useSelector(
     (state: any) => state.events
   );
+  const { user } = useUser();
+  const [refreshing, setRefreshing] = useState(false);
 
   const [isAudienceModalVisible, setIsAudienceModalVisible] =
     useState<boolean>(false);
@@ -90,7 +93,6 @@ export default function HomeScreen() {
   const CategoryItem = (item: any) => {
     let text = item.item.item.text;
     let image = item.item.item.image;
-    console.log(image);
     return (
       <View className="m-2">
         <TouchableOpacity
@@ -109,18 +111,22 @@ export default function HomeScreen() {
     );
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(fetchEvents());
+    setRefreshing(false);
+  };
+
   useEffect(() => {
     if (authState?.authenticated === true) {
       dispatch(fetchEvents());
     }
   }, [dispatch, authState]);
 
+  console.log(loading);
 
-  console.log(loading)
-
-  if(loading ===  true)
-  {
-    console.log("loading")
+  if (loading === true) {
+    console.log("loading");
   }
 
   return (
@@ -146,8 +152,17 @@ export default function HomeScreen() {
               <Feather name="user-plus" size={25} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => router.push('/profile')}>
-              <Feather name="circle" size={25} />
+            <TouchableOpacity onPress={() => router.push("/profile")}>
+              
+              {
+                user.profilePicture !== "" ? 
+                <Image
+                className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
+                source={{ uri: user.profilePicture}} />
+                :
+                <SimpleLineIcons name='user' size={25} />
+              } 
+              
             </TouchableOpacity>
           </View>
         </View>
@@ -163,9 +178,7 @@ export default function HomeScreen() {
               onPress={() => setPlacePickerModelVisible(true)}
             >
               <Feather name="map-pin" size={20} />
-              <Text className="font-inter-regular capitalize">
-                {location}
-              </Text>
+              <Text className="font-inter-regular capitalize">{location}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -202,12 +215,15 @@ export default function HomeScreen() {
           scrollEnabled={true}
           showsVerticalScrollIndicator
           keyExtractor={(item) => item._id.toString()}
-          renderItem={({ item }) => 
-          (
-            <TouchableOpacity onPress={() => router.push({ pathname : '/EventDetails', params: item})}>
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() =>
+                router.push({ pathname: "/EventDetails", params: item })
+              }
+            >
               <EventCard event={item} />
             </TouchableOpacity>
-           )}
+          )}
           ListEmptyComponent={
             <View className="flex justify-center items-center mt-10">
               <Text className="font-inter-regular text-gray-500">
@@ -216,6 +232,14 @@ export default function HomeScreen() {
             </View>
           }
           refreshing={status === "loading"}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["grey"]}
+              progressBackgroundColor={"black"}
+            />
+          }
           // Trigger refresh on pull-to-refresh
         />
       </SafeAreaView>
@@ -249,27 +273,27 @@ export default function HomeScreen() {
         <View className="flex-row items-center justify-evenly h-[70%]">
           <TouchableOpacity
             onPress={() => OnAudienceSelected("anyone")}
-            className={`flex flex-col w-40 h-40  
+            className={`flex flex-col w-40 h-40 gap-3
             rounded-xl justify-center items-center ${
               audienceType === "anyone"
                 ? "border-2 border-primary bg-cyan-50"
                 : ""
             } `}
           >
-            <Text className="text-6xl">🌍</Text>
+            <Image className="w-20 h-20" source={require('../../../assets/images/Icons/worldwide.png')} />
             <Text className="font-inter-semiBold text-sm">Anyone</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => OnAudienceSelected("People I Choose")}
-            className={`flex flex-col w-40 h-40  
+            className={`flex flex-col w-40 h-40  gap-3
             rounded-xl justify-center items-center ${
               audienceType === "People I Choose"
                 ? "border-2 border-primary bg-cyan-50"
                 : ""
             } `}
           >
-            <Text className="text-6xl">🔐</Text>
+            <Image className="w-20 h-20" source={require('../../../assets/images/Icons/lock.png')} />
             <Text className="font-inter-semiBold text-sm">People I Choose</Text>
           </TouchableOpacity>
         </View>
@@ -293,20 +317,18 @@ export default function HomeScreen() {
       <CustomModal
         height="h-[40%]"
         isVisible={placePickerModalVisible}
-        onClose={() => 
-          {
-            setSelectedPlace("")
-            setPlacePickerModelVisible(false)
-          }}
+        onClose={() => {
+          setSelectedPlace("");
+          setPlacePickerModelVisible(false);
+        }}
       >
         <TouchableOpacity
           className="absolute top-8 right-8"
-          onPress={() => 
-            {
-              console.log(selectedPlace)
-              updateLocation(selectedPlace)
-              setPlacePickerModelVisible(false)
-            }}
+          onPress={() => {
+            console.log(selectedPlace);
+            updateLocation(selectedPlace);
+            setPlacePickerModelVisible(false);
+          }}
         >
           <Text className="text-xl font-inter-semiBold">Done</Text>
         </TouchableOpacity>
@@ -326,7 +348,7 @@ export default function HomeScreen() {
         height="h-[30%]"
         isVisible={distanceSliderModalVisible}
         onClose={() => {
-          setDistanceSliderModelVisible(false)
+          setDistanceSliderModelVisible(false);
         }}
       >
         <TouchableOpacity
@@ -336,7 +358,9 @@ export default function HomeScreen() {
           <Text className="text-xl font-inter-semiBold">Done</Text>
         </TouchableOpacity>
         <View className="pt-16 gap-5 items-start pl-7">
-          <Text className="font-inter-semiBold">Maximum distance {parseInt(sliderDistanceValue)}</Text>
+          <Text className="font-inter-semiBold">
+            Maximum distance {parseInt(sliderDistanceValue)}
+          </Text>
           <Slider
             style={{ width: 350, height: 40 }}
             minimumValue={3}
@@ -360,25 +384,25 @@ export default function HomeScreen() {
           <Text className="text-xl font-inter-semiBold">Done</Text>
         </TouchableOpacity>
         <View className="mt-7">
-        <CalendarPicker
-          onDateChange={() => console.log("first")}
-          textStyle={{ fontFamily: "Poppins_400Regular" }}
-          previousTitle="<"
-          previousTitleStyle={{
-            fontFamily: "Poppins_600SemiBold",
-            fontSize: 30,
-          }}
-          nextTitle=">"
-          nextTitleStyle={{ fontFamily: "Poppins_600SemiBold", fontSize: 30 }}
-          disabledDatesTextStyle={{ color: "#D9E1E8" }}
-          minDate={new Date()}
-          selectedDayColor="#49D6D8"
-          selectedDayTextColor="#FFFFFF"
-          todayBackgroundColor="#49D6D8"
-          allowRangeSelection={true}
-          selectedRangeStartTextStyle={{ color: "#FFFFFF" }}
-          width={350}
-        />
+          <CalendarPicker
+            onDateChange={() => console.log("first")}
+            textStyle={{ fontFamily: "Poppins_400Regular" }}
+            previousTitle="<"
+            previousTitleStyle={{
+              fontFamily: "Poppins_600SemiBold",
+              fontSize: 30,
+            }}
+            nextTitle=">"
+            nextTitleStyle={{ fontFamily: "Poppins_600SemiBold", fontSize: 30 }}
+            disabledDatesTextStyle={{ color: "#D9E1E8" }}
+            minDate={new Date()}
+            selectedDayColor="#49D6D8"
+            selectedDayTextColor="#FFFFFF"
+            todayBackgroundColor="#49D6D8"
+            allowRangeSelection={true}
+            selectedRangeStartTextStyle={{ color: "#FFFFFF" }}
+            width={350}
+          />
         </View>
       </CustomModal>
     </View>

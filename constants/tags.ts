@@ -1,4 +1,4 @@
-const categoriesAndTags = [
+export const categoriesAndTags = [
   {
     category: "Pubs & Bars",
     tags: [
