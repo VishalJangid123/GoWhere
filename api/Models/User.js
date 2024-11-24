@@ -3,11 +3,11 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     fullName: { type: String},
-    username: { type: String, unique: true},
-    bio: { type: String},
+    username: { type: String},
+    aboutMe: { type: String},
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    profilePicture: { type: String, default: '' }, // URL to the profile picture
+    profilePicture: { type: String, default: '' }, 
     attendedEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
@@ -16,6 +16,13 @@ const userSchema = new mongoose.Schema({
         enum: ['Bronze', 'Silver', 'Gold', 'Platinum'],
         default: 'Bronze',
     },
+    gender: { type: String},
+    interests: [String],
+    jobTitle: { type: String},
+    company: { type: String},
+    school: { type: String},
+    birthdate: { type: Date}
+
 });
 
 // Method to update badge based on the number of attended events

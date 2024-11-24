@@ -9,7 +9,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 // Route to create a new event
 router.post('/create', authMiddleware, upload.single('image'), async (req, res) => {
@@ -106,8 +106,6 @@ router.put('/:eventId/update', authMiddleware, async (req, res) => {
 
 router.get('/all', authMiddleware, async (req, res) => {
 
-    console.log("All called", req.body)
-
     try {
 
         let result = await Event.find({});
@@ -125,10 +123,10 @@ router.get('/:eventId', authMiddleware, async (req, res) => {
 
         // Find the event by ID and populate creator and attendees
         const event = await Event.findById(eventId)
-            .populate('createdBy', 'name email profilePicture badge') // Get specific fields from the creator
+            .populate('createdBy', 'fullName email profilePicture badge') // Get specific fields from the creator
             .populate({
                 path: 'attendees',
-                select: 'name email profilePicture badge', // Get specific fields from the attendees
+                select: 'fullName email profilePicture badge', // Get specific fields from the attendees
             });
 
         if (!event) {
@@ -153,5 +151,8 @@ router.get('/:eventId', authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
+
+
+
 
 module.exports = router;

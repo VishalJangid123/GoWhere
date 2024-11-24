@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 router.post('/signup', async (req, res) => {
     console.log("Register called")
     console.log(req.body)
-    const { email, password } = req.body;
+    const { fullName, email, password } = req.body;
     try {
         // Check if the user already exists
         let existingUser = await User.findOne({ email });
@@ -21,6 +21,8 @@ router.post('/signup', async (req, res) => {
 
         // Create a new user
         const newUser = new User({
+            fullName,
+            username : fullName,
             email,
             password,
         });
@@ -36,13 +38,14 @@ router.post('/signup', async (req, res) => {
             token,
             user: {
                 id: newUser._id,
-                name: newUser.name,
+                fullName: newUser.fullName,
                 email: newUser.email,
                 profilePicture: newUser.profilePicture,
                 badge: newUser.badge
             }
         });
     } catch (err) {
+        console.log(err)
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
