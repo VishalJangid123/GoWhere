@@ -4,7 +4,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
-  Image
+  Image,
+  FlatList
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
@@ -14,9 +15,11 @@ import { checkDate } from "@/Utils";
 import moment from "moment";
 import axios from "axios";
 import { Location } from "@/context/EventContext";
-import { User } from "@/context/UserContext";
+import { User, useUser } from "@/context/UserContext";
+import Avatar from "@/components/Avatar";
 
 interface Event {
+  id: string;
   name: String;
   tags: [String];
   date: Date;
@@ -24,6 +27,9 @@ interface Event {
   images: [string],
   location: Location;
   createdBy: User;
+  attendees : [User],
+  isCreator : Boolean;
+  isAttendee : Boolean;
 }
 
 export default function EventDetails() {
@@ -31,6 +37,7 @@ export default function EventDetails() {
   const eventLocal = useLocalSearchParams();
 
   const [event, setEvent] = useState<Event>();
+  const { user } = useUser();
 
   const fetchEvents = async () => {
     const API_URL = "http://localhost:3000/event/";
@@ -48,6 +55,18 @@ export default function EventDetails() {
   if (!event) {
     return <Text>Loading</Text>;
   }
+
+  const JoinEvent = async() => {
+    try{
+      const response = await axios.post("http://localhost:3000/api/users/events/join/" + event.id)
+      console.log(response)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+
 
   return (
     <SafeAreaView style={{ backgroundColor: "white", height: '100%' }}>
@@ -96,7 +115,9 @@ export default function EventDetails() {
             </Text>
           </View>
 
-          <View className="flex-row gap-3 items-center">
+          <TouchableOpacity 
+          onPress={() => router.navigate({pathname: '/profile', params: event.createdBy.id})}
+          className="flex-row gap-3 items-center">
           {/* <Image
               className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
               source={{
@@ -104,7 +125,7 @@ export default function EventDetails() {
               }}
             /> */}
             <Text className="font-inter-semiBold">{event.createdBy.fullName}</Text>
-          </View>
+          </TouchableOpacity>
 
           <View>
             <Text className="font-inter-regular">{event.notesForAttendees}</Text>
@@ -116,23 +137,49 @@ export default function EventDetails() {
           </View>
         </View>
 
-        <View>
-            <Text>47/50 Will go * 1656</Text>
+        <View className="p-5">
+            <Text className="font-inter-semiBold">{event.attendees.length} Will go * 1656</Text>
         </View>
 
-        <View>
-          <TouchableOpacity>
-            <Feather name='plus-circle' size={50} color={"#49D6D8"}/>
+        <View className="p-5 flex-row justify-start">
+          <TouchableOpacity className="flex-col items-center gap-3">
+            <Feather name='plus-circle' size={70} color={"#49D6D8"}/>
             <Text className="font-inter-semiBold">Add Friends</Text>
           </TouchableOpacity>
+
+          
+          {
+            event.attendees &&
+            event.attendees.map((item, index) => (
+              <View className="flex-col flex items-center gap-2">
+              <Avatar size={24} imageUrl={item.profilePicture} title={item.fullName} />
+              <Text className="text-lg font-inter-regular">{item.fullName}</Text>
+              </View>
+            ))
+          }
+          
+          {/* <FlatList
+          data = {event.attendees}
+          renderItem={(item, index) => (
+            <View className="bg-red-400 flex-col flex items-center gap-2">
+            <Avatar size={24} imageUrl={item.item.profilePicture} title={item.item.fullName} />
+            <Text className="text-lg font-inter-regular">{item.item.fullName}</Text>
+            </View>
+          )}    
+          /> */}
+
         </View>
 
 
       </ScrollView>
 
       <View className="absolute bottom-7 flex w-full">
-        <TouchableOpacity className="justify-center self-center w-[95%] bg-primary p-4 rounded-full items-center">
-            <Text className="text-white font-inter-bold text-xl">Join</Text>
+        <TouchableOpacity 
+        onPress={()=> JoinEvent()}
+        className="justify-center self-center w-[95%] bg-primary p-4 rounded-full items-center">
+            <Text className="text-white font-inter-bold text-xl">
+              { event.isAttendee ? "Chat" : "Join" }
+              </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
