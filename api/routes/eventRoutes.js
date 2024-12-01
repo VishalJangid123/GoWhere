@@ -23,6 +23,7 @@ router.post('/create', authMiddleware, upload.single('image'), async (req, res) 
     date = new Date(JSON.parse(date));
     // Check if the image was uploaded
     console.log(req.body)
+
     let imageUrl = [];
     if (req.file) {
         try {
@@ -74,7 +75,6 @@ router.post('/create', authMiddleware, upload.single('image'), async (req, res) 
     }
 });
 
-// Route to update event details
 router.put('/:eventId/update', authMiddleware, async (req, res) => {
     const {
         name, description, location, images, notesForAttendees,
@@ -105,17 +105,37 @@ router.put('/:eventId/update', authMiddleware, async (req, res) => {
 });
 
 router.get('/all', authMiddleware, async (req, res) => {
-
     try {
+        const { startDate, endDate } = req.query;
 
-        let result = await Event.find({});
-        res.status(201).json({ message: 'Event Recv', events: result });
+        const { province } = req.query;
+
+        const filter = {};
+        if (province) {
+            filter["location.province"] = province ;
+        }
+
+        console.log(filter)
+
+        const result = await Event.find({})
+            .populate({
+                path: 'createdBy',
+                select: 'fullName profilePicture badge',
+            })
+            .populate({
+                path: 'attendees',
+                select: 'fullName profilePicture badge',
+            });
+        console.log(result)
+        res.status(200).json({
+            message: 'Events retrieved successfully',
+            events: result,
+        });
     } catch (err) {
-        console.log(err)
+        console.error(err);
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 
 router.get('/:eventId', authMiddleware, async (req, res) => {
     try {
@@ -133,6 +153,10 @@ router.get('/:eventId', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Event not found' });
         }
 
+        const isCreator = event.createdBy._id.toString() === req.user.id.toString();
+        const isAttendee = event.attendees.some(attendee => attendee._id.toString() === req.user.id.toString());
+
+       
         res.status(200).json({
             id: event._id,
             name: event.name,
@@ -145,6 +169,8 @@ router.get('/:eventId', authMiddleware, async (req, res) => {
             attendees: event.attendees, // Includes list of attendees with their details
             createdAt: event.createdAt,
             updatedAt: event.updatedAt,
+            isCreator,
+            isAttendee
         });
     } catch (err) {
         console.error(err.message);
