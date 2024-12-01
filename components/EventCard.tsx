@@ -4,13 +4,14 @@ import { Feather } from "@expo/vector-icons";
 import moment from "moment";
 import { checkDate } from "../Utils";
 import TagList from "./TagList";
+import Avatar from "./Avatar";
 
 export default function EventCard({ event }) {
   return (
-    <View>
+    <View className="elevation-xl">
       <View className="m-2 gap-1 rounded-xl elevation bg-white">
         <View className="bg-amber-300 h-10 rounded-t-xl flex-row items-center justify-center">
-          <Text className="text-center font-inter-semiBold ">Super User</Text>
+          <Text className="text-center font-inter-semiBold ">{event.createdBy.badge}</Text>
         </View>
 
         <View className="flex-row items-center">
@@ -18,57 +19,56 @@ export default function EventCard({ event }) {
           <TagList tags={event.tags} />
         </View>
 
-        <View className="p-4 gap-2">
-          <Text className="font-inter-regular text-gray-500">
-            {checkDate(event.date) +
-              moment(event.date).format("ddd, DD MMM YYYY, h:mm A") +
-              ""}
-          </Text>
-          <Text className="font-inter-semiBold">{event.name}</Text>
-          <Text className="font-inter-regular text-gray-500 ">
-            {event.location.name}
-          </Text>
-        </View>
+        <View className="pl-4 gap-2">
+              <Text className="font-inter-regular text-gray-500">
+                {checkDate(event.date) +
+                  moment(event.date).format("ddd, DD MMM YYYY, h:mm A") +
+                  ""}
+              </Text>
+              <Text className="font-inter-semiBold">{event.name}</Text>
+            </View>
 
-        {
-          event.attendees.length > 0 && 
-        <View className="flex-row items-center gap-3">
-          <View className="flex-row -space-x-4 overflow-hidden">
-            <Image
-              className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
-              source={{
-                uri: "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-              }}
-            />
-            <Image
-              className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
-              source={{
-                uri: "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-              }}
-            />
-            <Image
-              className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
-              source={{
-                uri: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80",
-              }}
-            />
-            <Image
-              className="w-10 h-10 inline-block size-8 rounded-full ring-2 ring-white"
-              source={{
-                uri: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-              }}
-            />
-          </View>
-          <View className="flex-row  gap-2 p-2 rounded-2xl bg-gray-300 ">
-            <Feather name="user" size={15} color={"#6b7280"} />
-            <Text className="text-gray-600">1624</Text>
-          </View>
-        </View>
-}
+       
 
-        <View className="flex-col ">
-          <Text>1/2 Will go * 13 Interested</Text>
-          <Text>{event.notesForAttendees}</Text>
+        <View className="flex-row">
+          <View className="w-2/3">
+          <View className="pl-4 gap-2">
+              <Text className="font-inter-regular text-gray-500 ">
+                {event.location.name}
+              </Text>
+            </View>
+
+            {event.attendees && event.attendees.length > 0 && (
+              <View className="p-4 flex-row items-center gap-3">
+                <View className="flex-row -space-x-4 overflow-hidden">
+                  {event.attendees &&
+                    event.attendees.map((item, index) => (
+                      <Avatar
+                        title={item.fullName}
+                        imageUrl={item.profilePicture}
+                        size={10}
+                      />
+                    ))}
+                </View>
+                {event.attendees && event.attendees.length > 0 && (
+                  <View className="flex-row  gap-2 p-2 rounded-2xl bg-gray-300 ">
+                    <Feather name="user" size={15} color={"#6b7280"} />
+                    <Text className="text-gray-600">
+                      {event.attendees.length}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
+
+            <View className="flex-col p-4 ">
+              {/* <Text>1/2 Will go * 13 Interested</Text> */}
+              <Text>{event.notesForAttendees}</Text>
+            </View>
+          </View>
+          <View className="items-center content-center justify-center">
+            <Image source={{ uri: event.images[0] }} className="aspect-square w-32 rounded-2xl" />
+          </View>
         </View>
       </View>
     </View>
