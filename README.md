@@ -14,6 +14,7 @@ GoWhere is a mobile app built using **React Native**, **Expo Router**, and **
 - [Technologies Used](#technologies-used-%EF%B8%8F)
 - [Work in Progress](#work-in-progress-)
 - [Task List](#gowhere-app-task-list-)
+- [Screenshots](#screeshot)
   
 
 
@@ -236,3 +237,24 @@ GoWhere is under active development, and here's where things stand so far! ✅
 - **Event RSVP**: Add an RSVP system to events (Interested, Will Go).
 - **Event Reminder Notifications**: Send push notifications for upcoming events the user has marked as "Interested" or "Will Go".
 - **Social Media Integration**: Add options for sharing events on Facebook, Twitter, etc.
+
+
+## Screeshot
+| Login |Sign up | Event Feed | Event Detail|
+|-------|--------|------------|--------------|
+| ![Login](https://github.com/user-attachments/assets/ba2ea6ed-6e75-4433-9cca-112bd501a984) | ![Sign up](https://github.com/user-attachments/assets/ce68245e-47a9-464b-a6e8-bd0de0469db4) | ![Event Feed](https://github.com/user-attachments/assets/5ab76e8d-3d2d-410b-badd-09b8c93c7651) |![Event Detail](https://github.com/user-attachments/assets/94dc15ef-4a39-4a4c-b076-edebf80c619d) |
+
+
+| Create Event - Select Type |Create Event - Select Category | Create Event | Create Event - Select Date |
+|-------|--------|------------|--------------|
+| ![Create Event - Select Type](https://github.com/user-attachments/assets/f6c4ed73-1090-421d-86fe-4a2b0c74e04c) | ![Event Category](https://github.com/user-attachments/assets/c2b9e823-9b12-482b-9cac-c25b13bb226d) | ![Create Event](https://github.com/user-attachments/assets/1f1e39df-344f-4c74-b591-bf79993ca151) | ![Event Create - Select Date](https://github.com/user-attachments/assets/288f58d2-9c24-4f54-97b9-76a386199f84) |
+
+| Create Event - Select Location |Create Event - Select Tags | User Profile | User Profile - Created |
+|-------|--------|------------|--------------|
+| ![Select Location](https://github.com/user-attachments/assets/a2553eb6-829d-455d-9510-ac035a4f62cd) | ![Create Event - Select Tags](https://github.com/user-attachments/assets/d4e7c8be-e0d8-46bc-a4b8-a365959b8033) | ![User Profile](https://github.com/user-attachments/assets/851cbff9-56ba-4240-9e55-a3d83c214299)  | ![User Profile - Created](https://github.com/user-attachments/assets/2ecd1086-af71-4f0f-9bff-66e7d45c40dc) |
+
+| Event Map |Event Map - List |  | |
+|-------|--------|------------|--------------|
+| ![Event Map](https://github.com/user-attachments/assets/2cce06dd-7db8-4681-9533-c2497815a7ad) | ![Event Map List](https://github.com/user-attachments/assets/04d808e5-a49f-402e-bd9f-6d153bae865f) | |
+
+
