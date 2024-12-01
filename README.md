@@ -59,16 +59,16 @@ The app lets users:
 
 ## **Technologies Used 🛠️**
 
-- **React Native**: A cross-platform framework for building iOS and Android apps with a single codebase.
-- **Expo Router**: Simplifies navigation and routing between app screens.
-- **MongoDB**: A flexible NoSQL database for storing user data, events, and chat histories.
-- **MapView (React Native Map Library)**: Displays events on an interactive map using **OpenStreetMap** data instead of Google Maps.
+- **✅ React Native**: A cross-platform framework for building iOS and Android apps with a single codebase.
+- **✅ Expo Router**: Simplifies navigation and routing between app screens.
+- **✅ MongoDB**: A flexible NoSQL database for storing user data, events, and chat histories.
+- **✅ MapView (React Native Map Library)**: Displays events on an interactive map using **OpenStreetMap** data instead of Google Maps.
 - **Socket.IO**: Powers real-time chat and event notifications.
-- **Redux**: Manages global state across the app for consistency and sync.
-- **Node.js**: Backend framework for handling API requests and managing data flow.
-- **Express.js**: Builds the RESTful APIs to handle user and event data.
+- **✅ Redux**: Manages global state across the app for consistency and sync.
+- **✅ Node.js**: Backend framework for handling API requests and managing data flow.
+- **✅ Express.js**: Builds the RESTful APIs to handle user and event data.
 - **Firebase Cloud Messaging (FCM)**: Sends push notifications for new messages and event updates.
-- **JWT (JSON Web Tokens)**: Ensures secure user authentication and sessions.
+- **✅ JWT (JSON Web Tokens)**: Ensures secure user authentication and sessions.
 - **OpenStreetMap**: Provides open-source map data for event location display.
 
 ## **Work in Progress 🚧**
