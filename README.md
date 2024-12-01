@@ -82,17 +82,17 @@ GoWhere is under active development, and here's where things stand so far! ✅
 
 ### **API Endpoints:**
 
-- **POST /signup**: Handle user registration (username, email, password).
-- **POST /login**: Authenticate user login and generate JWT tokens.
+- **✅POST /signup**: Handle user registration (username, email, password).
+- **✅POST /login**: Authenticate user login and generate JWT tokens.
 - **POST /recover-password**: Handle password reset via email.
-- **GET /profile**: Fetch user profile information (after login).
+- **✅GET /profile**: Fetch user profile information (after login).
 
 ### **UI Components:**
 
-- **Sign-Up Screen**: Create a form with fields for username, email, and password.
-- **Login Screen**: Design a login form with email and password fields.
+- **✅Sign-Up Screen**: Create a form with fields for username, email, and password.
+- **✅Login Screen**: Design a login form with email and password fields.
 - **Password Recovery Screen**: Add a "Forgot Password?" link and a recovery form.
-- **Profile Screen**: Show user info (name, bio, events created/joined) with edit options.
+- **✅Profile Screen**: Show user info (name, bio, events created/joined) with edit options.
 
 ---
 
@@ -101,15 +101,15 @@ GoWhere is under active development, and here's where things stand so far! ✅
 ### **API Endpoints:**
 
 - **GET /events**: Fetch a list of events with filtering and sorting options.
-- **POST /events**: Create new events (title, description, date, location).
+- **✅POST /events**: Create new events (title, description, date, location).
 - **PUT /events/:id**: Update an existing event (edit title, date, location).
 - **DELETE /events/:id**: Delete an event.
 
 ### **UI Components:**
 
-- **Event Feed Screen**: Display a list of events with title, date, location, and creator.
-- **Event Detail Screen**: Show detailed event information with options to join or mark as interested.
-- **Create/Edit Event Screen**: Build a form to input/edit event details (title, date, location, description).
+- **✅Event Feed Screen**: Display a list of events with title, date, location, and creator.
+- **✅Event Detail Screen**: Show detailed event information with options to join or mark as interested.
+- **✅Create/Edit Event Screen**: Build a form to input/edit event details (title, date, location, description).
 - **Event Delete Modal**: Add a delete button with a confirmation dialog.
 
 ---
@@ -187,15 +187,15 @@ GoWhere is under active development, and here's where things stand so far! ✅
 
 ### **API Endpoints:**
 
-- **GET /users/:id**: Fetch user profile details.
-- **PUT /users/:id**: Update user profile information (name, bio, etc.).
+- **✅GET /users/:id**: Fetch user profile details.
+- **✅PUT /users/:id**: Update user profile information (name, bio, etc.).
 
 ### **UI Components:**
 
-- **Profile Screen**: Display user profile details, including bio, photo, and events.
-- **Edit Profile Screen**: Allow users to update their name, bio, and photo.
-- **Created Events Tab**: Show a list of events the user has created.
-- **Joined Events Tab**: Show a list of events the user is attending or marked as interested.
+- **✅Profile Screen**: Display user profile details, including bio, photo, and events.
+- **✅Edit Profile Screen**: Allow users to update their name, bio, and photo.
+- **✅Created Events Tab**: Show a list of events the user has created.
+- **✅Joined Events Tab**: Show a list of events the user is attending or marked as interested.
 
 ---
 
@@ -216,8 +216,8 @@ GoWhere is under active development, and here's where things stand so far! ✅
 
 ### **Database Design (MongoDB)**
 
-- **Users Collection**: Store user info (username, email, password, bio, followers, following).
-- **Events Collection**: Store event details (title, date, location, attendees).
+- **✅Users Collection**: Store user info (username, email, password, bio, followers, following).
+- **✅Events Collection**: Store event details (title, date, location, attendees).
 - **Chats Collection**: Store chat conversations and participants.
 - **Followers Collection**: Store follower and following relationships.
 
@@ -232,7 +232,7 @@ GoWhere is under active development, and here's where things stand so far! ✅
 
 ### **10. Additional Features 🚀**
 
-- **User Badges**: Implement badges for users (e.g., "Event Creator", "Top Attendee").
+- **✅User Badges**: Implement badges for users (e.g., "Event Creator", "Top Attendee").
 - **Event RSVP**: Add an RSVP system to events (Interested, Will Go).
 - **Event Reminder Notifications**: Send push notifications for upcoming events the user has marked as "Interested" or "Will Go".
 - **Social Media Integration**: Add options for sharing events on Facebook, Twitter, etc.
