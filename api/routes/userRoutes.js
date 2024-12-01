@@ -3,14 +3,12 @@ const router = express.Router();
 const User = require("../Models/User");
 const Event = require("../Models/Event");
 const authMiddleware = require("../middleware/authMiddleware");
-const multer = require('multer');
-const axios = require('axios');
-
+const multer = require("multer");
+const axios = require("axios");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Route to get the logged-in user's details
 router.get("/me", authMiddleware, async (req, res) => {
   console.log("user/me", req.user.id);
   try {
@@ -43,7 +41,6 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
-// Route to get user profile
 router.get("/:userId", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).populate(
@@ -56,7 +53,6 @@ router.get("/:userId", authMiddleware, async (req, res) => {
   }
 });
 
-// Route to update user profile picture
 router.put("/:userId/profile-picture", authMiddleware, async (req, res) => {
   const { profilePicture } = req.body;
   try {
@@ -71,7 +67,6 @@ router.put("/:userId/profile-picture", authMiddleware, async (req, res) => {
   }
 });
 
-// Route to update attended events and badge
 router.put(
   "/:userId/attend-event/:eventId",
   authMiddleware,
@@ -101,10 +96,9 @@ router.put(
   }
 );
 
-// Update user profile
 router.put("/update", authMiddleware, async (req, res) => {
-  console.log("Update" ,req.body)
-    try {
+  console.log("Update", req.body);
+  try {
     const userId = req.user.id; // Extract user ID from authMiddleware
     const updates = req.body; // Allow dynamic updates from the request body
 
@@ -154,85 +148,140 @@ router.put("/update", authMiddleware, async (req, res) => {
   }
 });
 
-router.get('/events/created', authMiddleware, async (req, res) => {
+router.get("/events/created", authMiddleware, async (req, res) => {
   try {
-      const userId = req.user.id;
+    const userId = req.user.id;
 
-      // Find events where the user is the creator
-      const eventsCreated = await Event.find({ createdBy: userId })
-          .populate('attendees', 'name email profilePicture') // Populate attendee details
-          .select('-creator'); // Exclude creator if not required
+    // Find events where the user is the creator
+    const eventsCreated = await Event.find({ createdBy: userId })
+      .populate("attendees", "name email profilePicture") // Populate attendee details
+      .select("-creator"); // Exclude creator if not required
 
-      res.status(200).json({
-          events: eventsCreated,
-      });
+    res.status(200).json({
+      events: eventsCreated,
+    });
   } catch (error) {
-      console.error(error.message);
-      res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
-// Get events joined by the user
-router.get('/events/joined', authMiddleware, async (req, res) => {
+router.get("/events/joined", authMiddleware, async (req, res) => {
   try {
-      const userId = req.user.id;
+    const userId = req.user.id;
 
-      // Find events where the user is in the attendees list
-      const eventsJoined = await Event.find({ attendees: userId })
-          .populate('creator', 'name email profilePicture') // Populate creator details
-          .select('-attendees'); // Exclude attendees if not required
-
-      res.status(200).json({
-          message: 'Events joined by the user',
-          events: eventsJoined,
+    // Find events where the user is in the attendees list
+    const eventsJoined = await Event.find({ attendees: userId })
+      .populate("createdBy", "fullName profilePicture") // Populate creator details
+      .populate({
+        path: "attendees",
+        select: "fullName profilePicture badge",
       });
+
+    res.status(200).json({
+      message: "Events joined by the user",
+      events: eventsJoined,
+    });
   } catch (error) {
-      console.error(error.message);
-      res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
-// Upload profile picture
-router.post('/uploadProfilePicture', authMiddleware, upload.single('profile'), async (req, res) => {
-  try {
+router.post(
+  "/uploadProfilePicture",
+  authMiddleware,
+  upload.single("profile"),
+  async (req, res) => {
+    try {
       const userId = req.user.id;
-      console.log("upload image")
-      console.log(req.body)
-      console.log(req.file)
+      console.log("upload image");
+      console.log(req.body);
+      console.log(req.file);
       if (!req.file) {
-          return res.status(400).json({ message: 'No file uploaded' });
+        return res.status(400).json({ message: "No file uploaded" });
       }
-      console.log("upload image 1")
+      console.log("upload image 1");
 
       // Send the image to ImgBB
       const formData = new FormData();
-      formData.append('image', req.file.buffer.toString('base64')); // Convert buffer to base64
+      formData.append("image", req.file.buffer.toString("base64")); // Convert buffer to base64
 
-      const response = await axios.post('https://api.imgbb.com/1/upload', formData, {
-        params: { key: process.env.IMG_URIBB_API_KEY },
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+      const response = await axios.post(
+        "https://api.imgbb.com/1/upload",
+        formData,
+        {
+          params: { key: process.env.IMG_URIBB_API_KEY },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
 
       // Get the image URL from ImgBB's response
       const imageUrl = response.data.data.url;
 
       // Update the user's profile picture in the database
       const updatedUser = await User.findByIdAndUpdate(
-          userId,
-          { profilePicture: imageUrl },
-          { new: true }
+        userId,
+        { profilePicture: imageUrl },
+        { new: true }
       );
 
       res.status(200).json({
-          message: 'Profile picture uploaded successfully',
-          profilePicture: imageUrl,
-          user: updatedUser,
+        message: "Profile picture uploaded successfully",
+        profilePicture: imageUrl,
+        user: updatedUser,
       });
-  } catch (error) {
+    } catch (error) {
       console.error(error.message);
-      res.status(500).json({ message: 'Error uploading profile picture', error: error.message });
+      res
+        .status(500)
+        .json({
+          message: "Error uploading profile picture",
+          error: error.message,
+        });
+    }
+  }
+);
+
+router.post("/events/join/:eventId", authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { eventId } = req.params;
+
+    console.log(eventId);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    if (event.attendees.includes(userId)) {
+      return res
+        .status(400)
+        .json({ message: "You have already joined this event" });
+    }
+
+    event.attendees.push(userId);
+    await event.save();
+
+    const user = await User.findById(userId);
+    if (!user.joinedEvents.includes(eventId)) {
+      user.joinedEvents.push(eventId);
+      await user.save();
+    }
+
+    res.status(200).json({
+      message: "Successfully joined the event",
+      event: {
+        id: event._id,
+        title: event.title,
+        attendees: event.attendees.length,
+      },
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
 
 module.exports = router;
