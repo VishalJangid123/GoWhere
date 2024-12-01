@@ -13,13 +13,18 @@ import { Feather } from "@expo/vector-icons";
 import { SceneMap, TabView } from "react-native-tab-view";
 import CustomTabBar from "@/components/CustomTab";
 import { useAuth } from "@/context/AuthContext";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import EventCard from "@/components/EventCard";
 
 export default function Profile() {
+  const userLocal = useLocalSearchParams();
   const router = useRouter();
+
+  const [ mine, setMine ] = useState(false)
+
+ 
 
   const [selectedTab, setSelectedTab] = useState(0);
   const tabs = ["Joined", "Created", "Stickers"];
@@ -29,9 +34,20 @@ export default function Profile() {
   console.log(user);
 
   const [createdEvents, setCreatedEvent] = useState();
+  const [joinedEvents, setJoinedEvent] = useState();
 
   useEffect(() => {
-    refreshUserData();
+    if(userLocal)
+    { 
+        setMine(false)
+        
+    }
+    else{
+        setMine(true)
+        refreshUserData();
+    }
+    
+    fetchJoinedEvent()
   }, []);
 
   useEffect(() => {
@@ -46,10 +62,22 @@ export default function Profile() {
     setCreatedEvent(response.data.events);
   };
 
+  const fetchJoinedEvent = async () => {
+    const response = await axios.get(
+      "http://localhost:3000/api/users/events/joined"
+    );
+    console.log('joined',response.data);
+    setJoinedEvent(response.data.events);
+  };
+
   useEffect(() => {
     if (selectedTab === 1) {
       //created
       fetchCreatedEvent();
+    }
+    if(selectedTab === 0)
+    {
+      fetchJoinedEvent();
     }
   }, [selectedTab]);
 
@@ -150,7 +178,30 @@ export default function Profile() {
           <ScrollView contentContainerStyle={styles.tabContent}>
             <View >
               {selectedTab === 0 && (
-                <Text style={styles.tabText}>Content for Tab 1</Text>
+                <FlatList
+                contentContainerStyle={{ flexGrow: 1, paddingBottom: 160 }}
+                data={joinedEvents}
+                scrollEnabled={true}
+                showsVerticalScrollIndicator
+                keyExtractor={(item) => item._id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push({ pathname: "/EventDetails", params: item })
+                    }
+                  >
+                    <EventCard event={item} />
+                  </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                  <View className="flex justify-center items-center mt-10">
+                    <Text className="font-inter-regular text-gray-500">
+                      No events available
+                    </Text>
+                  </View>
+                }
+                // Trigger refresh on pull-to-refresh
+              />
               )}
               {selectedTab === 1 && (
                 <FlatList
