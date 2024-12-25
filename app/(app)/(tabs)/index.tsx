@@ -113,13 +113,14 @@ export default function HomeScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    dispatch(fetchEvents());
+    dispatch(fetchEvents({query: ""})); //{query: "start=2024-11-24&end=2024-12-30"}
+    console.log("refreshing")
     setRefreshing(false);
   };
 
   useEffect(() => {
     if (authState?.authenticated === true) {
-      dispatch(fetchEvents());
+      dispatch(fetchEvents({query: ""}));
     }
   }, [dispatch, authState]);
 
@@ -325,7 +326,6 @@ export default function HomeScreen() {
         <TouchableOpacity
           className="absolute top-8 right-8"
           onPress={() => {
-            console.log(selectedPlace);
             updateLocation(selectedPlace);
             setPlacePickerModelVisible(false);
           }}
